@@ -11,7 +11,7 @@ var OptionParser = require('option-parser'),
     opts.addOption('h', 'help', 'Display this help message').action(opts.helpAction());
     opts.addOption(null, 'list', 'List hosts').action(function() {
         client.get((url.path || "hubot").replace('/', '') + ':ansible:inventory', function(err,data) {
-            process.stdout.write(JSON.stringify(data) + "\n");
+            process.stdout.write(data + "\n");
             client.quit();
         });
     });
