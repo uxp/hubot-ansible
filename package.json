@@ -1,0 +1,14 @@
+{
+    "name": "hubot-ansible",
+    "version": "0.1.0",
+    "description": "A hubot plugin to run ansible commands",
+    "repository": {
+        "type": "git",
+        "url": "git@github.com:uxp/hubot-ansible.git"
+    },
+    "dependencies": {
+        "redis": "^0.8.4",
+        "option-parser": "^0.1.3"
+    },
+    "main": "index.js"
+}
