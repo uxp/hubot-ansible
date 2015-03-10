@@ -99,8 +99,9 @@ module.exports = (function() {
                     }
                 });
                 var idx = stdout.lastIndexOf("PLAY RECAP")
+                    recap = stdout.slice(idx);
 
-                msg.send(stdout.slice(idx));
+                msg.send(recap)
             });
         });
 
