@@ -98,9 +98,9 @@ module.exports = (function() {
                         msg.reply("I ran into an error running " + playbook +". Check the ansible.log file");
                     }
                 });
-                console.log(typeof stdout);
+                var idx = stdout.lastIndexOf("PLAY RECAP")
 
-                msg.send("yay");
+                msg.send(stdout.slice(idx));
             });
         });
 
