@@ -87,16 +87,20 @@ module.exports = (function() {
 
             ansible += " --inventory-file=" + path.join(__dirname, '..', 'bin', 'inventory');
 
-            msg.reply("Running " + playbook + ".yml" + (tags.length ? " with tags: "+ tags.join(',') : ""));
+            msg.send("Running " + playbook + ".yml" + (tags.length ? " with tags: "+ tags.join(',') : ""));
             robot.logger.info("Executing: " + ansible);
             child.exec(ansible, options, function(error,stdout,stderr) {
-                if (error) robot.logger.error(stderr);
+                if (error)
+                    robot.logger.error(stderr);
+
                 fs.writeFile(ansible_log_path, stdout, function(err) {
                     if (err) {
-                        msg.send("I ran into an error running " + playbook +". Check the ansible.log file");
+                        msg.reply("I ran into an error running " + playbook +". Check the ansible.log file");
                     }
-                })
-                console.log(stdout);
+                });
+                console.log(typeof stdout);
+
+                msg.send("yay");
             });
         });
 
