@@ -29,6 +29,7 @@ module.exports = (function() {
     return function(robot) {
         var inventory = Object.create(null),
             ansible_playbooks_path = (process.env.HUBOT_ANSIBLE_PATH || path.join(__dirname, '..', 'playbooks')),
+            ansible_log_path = (process.env.HUBOT_ANSIBLE_LOG || path.join(__dirname, '..', 'ansible.log')),
             url = URL.parse(process.env.REDIS_URL || 'redis://localhost:6379'),
             redis = Redis.createClient(url.port, url.hostname),
             prefix = ((url.path || 'hubot').replace('/', '') + ':ansible'),
@@ -90,7 +91,7 @@ module.exports = (function() {
             robot.logger.info("Executing: " + ansible);
             child.exec(ansible, options, function(error,stdout,stderr) {
                 if (error) robot.logger.error(stderr);
-                fs.writeFile("../ansible.log", stdout, function(err) {
+                fs.writeFile(ansible_log_path, stdout, function(err) {
                     if (err) {
                         msg.send("I ran into an error running " + playbook +". Check the ansible.log file");
                     }
