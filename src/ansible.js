@@ -86,12 +86,13 @@ module.exports = (function() {
             ansible += " --inventory-file=" + path.join(__dirname, '..', 'bin', 'inventory');
 
             msg.reply("Running " + playbook + ".yml" + (tags.length ? " with tags: "+ tags.join(',') : ""));
-            child.exec(ansible, options, function(error,stdout,stderr) {
-                console.log("error: ", error);
-                console.log("stdout: ", stdout);
-                console.log("stderr: ", stderr);
-            });
             robot.logger.info("Executing: " + ansible);
+            child.exec(ansible, options, function(error,stdout,stderr) {
+                // console.log("error: ", error);
+                // console.log("stdout: ", stdout);
+                // console.log("stderr: ", stderr);
+                console.log("");
+            });
         });
 
         robot.respond(/ansible inventory add ([0-9a-zA-Z\-_\.]+)(?:\s+)([\w\-]+)(?:\s+)(.*)$/i, function(msg) {
@@ -113,15 +114,17 @@ module.exports = (function() {
                 var pair = varPair.split("=");
 
                 inventory[group]['vars'][pair[0]] = pair[1];
+                msg.reply("Added host '" + host + "' to group '" + group + "'.");
             });
         });
 
         robot.respond(/ansible inventory del ([0-9a-zA-Z\-_\.]+)/i, function(msg) {
             var name = msg.match[1];
             inventory[name] = undefined;
+            msg.reply("Removed group '" + name  + "' from inventory");
         });
         robot.respond(/ansible inventory list/i, function(msg) {
-            console.log(JSON.stringify(inventory));
+            msg.send(JSON.stringify(inventory));
         });
 
         robot.respond(/ansible inventory host ([0-9a-zA-Z\-_\.]+)/i, function(msg) {
