@@ -1,5 +1,11 @@
 // Description:
-//   None
+//   Run Ansible playbooks and manage inventory through Hubot
+//
+// Dependencies:
+//   "redis": "^0.8.4"
+//
+// Configuration:
+//   HUBOT_ANSIBLE_PATH: path to your ansible playbooks
 //
 // Commands:
 //   hubot ansible playbook <playbook> <tag, [tag]> - runs <playbook> with <tags>
@@ -8,6 +14,8 @@
 //   hubot ansible inventory list - Lists saved Ansible inventory in api format
 //   hubot ansible inventory host <hostname> - Returns a dictionary of variables for the given <hostname>
 //
+// Author:
+//   uxp <howard@hplogsdon.com>
 
 module.exports = (function() {
     "use strict";
@@ -70,14 +78,18 @@ module.exports = (function() {
                 ansible = ("ansible-playbook " + playbook + ".yml"),
                 options = { cwd: ansible_playbooks_path };
 
-            if (tags.length && tags[0] != "")
+            if (tags.length && tags[0] === "") tags = [];
+
+            if (tags.length)
                 ansible += " --tags='" + tags.join(",") + "'";
 
+            msg.reply("Running " + playbook + ".yml" + (tags.length ? " with tags: "+ tags.join(',') : ""));
             child.exec(ansible, options, function(error,stdout,stderr) {
                 console.log("error: ", error);
                 console.log("stdout: ", stdout);
                 console.log("stderr: ", stderr);
             });
+            robot.logger.info(ansible);
         });
 
         robot.respond(/ansible inventory add ([0-9a-zA-Z\-_\.]+)(?:\s+)([\w\-]+)(?:\s+)(.*)$/i, function(msg) {
