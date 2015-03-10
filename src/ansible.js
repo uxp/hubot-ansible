@@ -21,6 +21,7 @@ module.exports = (function() {
     "use strict";
 
     var path = require('path'),
+        fs = require('fs'),
         URL = require('url'),
         child = require('child_process'),
         Redis = require('redis');
@@ -88,10 +89,13 @@ module.exports = (function() {
             msg.reply("Running " + playbook + ".yml" + (tags.length ? " with tags: "+ tags.join(',') : ""));
             robot.logger.info("Executing: " + ansible);
             child.exec(ansible, options, function(error,stdout,stderr) {
-                console.log("error: ", error);
-                console.log("stdout: ", stdout);
-                console.log("stderr: ", stderr);
-                console.log("");
+                if (error) robot.logger.error(stderr);
+                fs.writeFile("../ansible.log", stdout, function(err) {
+                    if (err) {
+                        msg.send("I ran into an error running " + playbook +". Check the ansible.log file");
+                    }
+                })
+                console.log(stdout);
             });
         });
 
