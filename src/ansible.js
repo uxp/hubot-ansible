@@ -83,7 +83,7 @@ module.exports = (function() {
             if (tags.length)
                 ansible += " --tags='" + tags.join(",") + "'";
 
-            ansible += " --inventory-file=" + path.join(__dirname, 'bin', 'inventory');
+            ansible += " --inventory-file=" + path.join(__dirname, '..', 'bin', 'inventory');
 
             msg.reply("Running " + playbook + ".yml" + (tags.length ? " with tags: "+ tags.join(',') : ""));
             child.exec(ansible, options, function(error,stdout,stderr) {
