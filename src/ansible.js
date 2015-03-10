@@ -91,19 +91,19 @@ module.exports = (function() {
             robot.logger.info("Executing: " + ansible);
             child.exec(ansible, options, function(error,stdout,stderr) {
                 if (error) {
-                    robot.logger.error("error:  " + stderr);
-                    robot.logger.error("stdout: " + stdout);
+                    robot.logger.error("Failure running command: "+ ansible +"\nSTDOUT: " + stdout + "\nSTDERR: " + stderr);
+                    msg.reply("There was an error executing " + playbook + ". Check your logs");
                 }
 
                 fs.writeFile(ansible_log_path, stdout, function(err) {
                     if (err) {
-                        msg.reply("I ran into an error running " + playbook +". Check the ansible.log file");
+                        msg.reply("I ran into an error writing the output of " + playbook +" to the log. Check the bot log file.");
                     }
                 });
                 var idx = stdout.lastIndexOf("PLAY RECAP"),
                     recap = stdout.slice(idx);
 
-                msg.send(recap)
+                msg.send(recap);
             });
         });
 
