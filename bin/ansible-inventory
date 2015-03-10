@@ -1,0 +1,28 @@
+#!/usr/bin/env node
+var OptionParser = require('option-parser'),
+    URL = require('url'),
+    Redis = require('redis');
+
+(function() {
+    var opts = new OptionParser(),
+        url = URL.parse(process.env.REDIS_URL || 'redis://localhost:6379'),
+        client = Redis.createClient(url.port, url.hostname);
+
+    opts.addOption('h', 'help', 'Display this help message').action(opts.helpAction());
+    opts.addOption(null, 'list', 'List hosts').action(function() {
+        client.get((url.path || "hubot").replace('/', '') + ':ansible:inventory', function(err,data) {
+            process.stdout.write(JSON.stringify(data) + "\n");
+            client.quit();
+        });
+    });
+    opts.addOption(null, 'host', 'Show variables for HOST')
+      .argument('HOST')
+      .action(function(value) {
+        client.get((url.path || "hubot").replace('/', '') + ':ansible:inventory', function(err,data) {
+            process.stdout.write(JSON.stringify({}) + "\n");
+            client.quit();
+        });
+    });
+    opts.parse();
+
+})();
