@@ -90,8 +90,10 @@ module.exports = (function() {
             msg.send("Running " + playbook + ".yml" + (tags.length ? " with tags: "+ tags.join(',') : ""));
             robot.logger.info("Executing: " + ansible);
             child.exec(ansible, options, function(error,stdout,stderr) {
-                if (error)
-                    robot.logger.error(stderr);
+                if (error) {
+                    robot.logger.error("error:  " + stderr);
+                    robot.logger.error("stdout: " + stdout);
+                }
 
                 fs.writeFile(ansible_log_path, stdout, function(err) {
                     if (err) {
