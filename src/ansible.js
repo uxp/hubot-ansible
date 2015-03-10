@@ -88,9 +88,9 @@ module.exports = (function() {
             msg.reply("Running " + playbook + ".yml" + (tags.length ? " with tags: "+ tags.join(',') : ""));
             robot.logger.info("Executing: " + ansible);
             child.exec(ansible, options, function(error,stdout,stderr) {
-                // console.log("error: ", error);
-                // console.log("stdout: ", stdout);
-                // console.log("stderr: ", stderr);
+                console.log("error: ", error);
+                console.log("stdout: ", stdout);
+                console.log("stderr: ", stderr);
                 console.log("");
             });
         });
