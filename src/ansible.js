@@ -75,7 +75,7 @@ module.exports = (function() {
         robot.respond(/ansible playbook ([0-9a-zA-Z\-_]+)((?:\s+)(.*))?$/i, function(msg) {
             var playbook = msg.match[1],
                 tags = (msg.match[2] || "").trim().split(" "),
-                ansible = ("ansible-playbook " + playbook + ".yml"),
+                ansible = ("ansible-playbook " + playbook + ".yml -vvvv"),
                 options = { cwd: ansible_playbooks_path };
 
             if (tags.length && tags[0] === "") tags = [];
@@ -83,13 +83,15 @@ module.exports = (function() {
             if (tags.length)
                 ansible += " --tags='" + tags.join(",") + "'";
 
+            ansible += " --inventory-file=" + path.join(__dirname, 'bin', 'inventory');
+
             msg.reply("Running " + playbook + ".yml" + (tags.length ? " with tags: "+ tags.join(',') : ""));
             child.exec(ansible, options, function(error,stdout,stderr) {
                 console.log("error: ", error);
                 console.log("stdout: ", stdout);
                 console.log("stderr: ", stderr);
             });
-            robot.logger.info(ansible);
+            robot.logger.info("Executing: " + ansible);
         });
 
         robot.respond(/ansible inventory add ([0-9a-zA-Z\-_\.]+)(?:\s+)([\w\-]+)(?:\s+)(.*)$/i, function(msg) {
